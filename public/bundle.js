@@ -24920,11 +24920,14 @@
 	        null,
 	        React.createElement(Nav, null),
 	        React.createElement(
-	            'h2',
-	            null,
-	            'Main Component'
-	        ),
-	        props.children
+	            'div',
+	            { className: 'row' },
+	            React.createElement(
+	                'div',
+	                { className: 'column medium-6 large-4 small-centered' },
+	                props.children
+	            )
+	        )
 	    );
 	};
 
@@ -25028,38 +25031,53 @@
 
 	    getInitialState: function getInitialState() {
 	        return {
-	            location: 'Miami',
-	            temp: 88
+	            isLoading: false
 	        };
 	    },
 	    handleSearch: function handleSearch(location) {
 
 	        var that = this;
+	        this.setState({ isLoading: true });
 	        openWeatherMap.getTemp(location).then(function (temp) {
 	            that.setState({
 	                location: location,
-	                temp: temp
+	                temp: temp,
+	                isLoading: false
 	            });
 	        }, function (errorMessage) {
+	            that.setState({ isLoading: false });
 	            alert(errorMessage);
 	        });
 	    },
 	    render: function render() {
 	        var _state = this.state,
+	            isLoading = _state.isLoading,
 	            temp = _state.temp,
 	            location = _state.location;
 
+
+	        function renderMessage() {
+	            if (isLoading) {
+	                return React.createElement(
+	                    'h3',
+	                    null,
+	                    'Fetching weatcher'
+	                );
+	            } else if (temp && location) {
+	                return React.createElement(Info, { location: location, temp: temp });
+	            }
+	        }
 
 	        return React.createElement(
 	            'div',
 	            null,
 	            React.createElement(
-	                'h2',
-	                null,
-	                'Weather Component'
+	                'h1',
+	                { className: 'text-center' },
+	                'Weathert'
 	            ),
 	            React.createElement(Form, { onSearch: this.handleSearch }),
-	            React.createElement(Info, { location: location, temp: temp })
+	            renderMessage()
 	        );
 	    }
 	});
@@ -25094,7 +25112,7 @@
 	            React.createElement("input", { type: "text", ref: "location", placeholder: "localization" }),
 	            React.createElement(
 	                "button",
-	                { type: "submit" },
+	                { className: "hollow button expended", type: "submit" },
 	                "Submit"
 	            )
 	        );
@@ -26704,15 +26722,24 @@
 /* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var React = __webpack_require__(8);
 
 	var About = function About(props) {
 	    return React.createElement(
-	        'h2',
+	        "div",
 	        null,
-	        'About Component'
+	        React.createElement(
+	            "h2",
+	            { className: "text-center" },
+	            "About"
+	        ),
+	        React.createElement(
+	            "p",
+	            null,
+	            "Small app build on React using Foundation"
+	        )
 	    );
 	};
 
@@ -26726,11 +26753,45 @@
 
 	var React = __webpack_require__(8);
 
+	var _require = __webpack_require__(166),
+	    Link = _require.Link;
+
 	var Examples = function Examples() {
 	    return React.createElement(
-	        'h2',
+	        'div',
 	        null,
-	        'Example Component'
+	        React.createElement(
+	            'h1',
+	            { className: 'text-center' },
+	            'Examples'
+	        ),
+	        React.createElement(
+	            'p',
+	            null,
+	            'Here are a few example locations to try out:'
+	        ),
+	        React.createElement(
+	            'ol',
+	            null,
+	            React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                    Link,
+	                    { to: '/?location=Philadelphia' },
+	                    'Philadelphia, PA'
+	                )
+	            ),
+	            React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                    Link,
+	                    { to: '/?location=Rio' },
+	                    'Rio, Brazil'
+	                )
+	            )
+	        )
 	    );
 	};
 

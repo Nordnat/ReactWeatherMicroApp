@@ -15,7 +15,7 @@ var Form = React.createClass({
         return (
             <form onSubmit={this.onFormSubmit}>
                 <input type="text" ref="location" placeholder="localization"/>
-                <button type="submit">Submit</button>
+                <button className="hollow button expended" type="submit">Submit</button>
             </form>
         )
     }
