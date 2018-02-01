@@ -24945,73 +24945,92 @@
 	    Link = _require.Link,
 	    IndexLink = _require.IndexLink;
 
-	var Nav = function Nav() {
-	    return React.createElement(
-	        'div',
-	        { className: 'grid-container full' },
-	        React.createElement(
+	var Nav = React.createClass({
+	    displayName: 'Nav',
+
+	    onSearch: function onSearch(e) {
+	        e.preventDefault();
+	        var searchValue = this.refs.searchInputValue.value;
+
+	        var encodedLocation = encodeURIComponent(searchValue);
+	        if (searchValue.length > 0) {
+	            this.refs.searchInputValue.value = "";
+	            window.location.hash = '#/?location=' + encodedLocation;
+	        }
+	    },
+	    render: function render() {
+	        return React.createElement(
 	            'div',
-	            { className: 'top-bar' },
+	            { className: 'grid-container full' },
 	            React.createElement(
 	                'div',
-	                { className: 'top-bar-left' },
+	                { className: 'top-bar' },
 	                React.createElement(
-	                    'ul',
-	                    { className: 'menu medium-horizontal' },
+	                    'div',
+	                    { className: 'top-bar-left' },
 	                    React.createElement(
-	                        'li',
-	                        null,
+	                        'ul',
+	                        { className: 'menu medium-horizontal' },
 	                        React.createElement(
-	                            IndexLink,
-	                            { to: '/', activeClassName: 'active', activeStyle: { fontWeight: 'bold' } },
-	                            'Get Weather'
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'li',
-	                        null,
+	                            'li',
+	                            null,
+	                            React.createElement(
+	                                IndexLink,
+	                                { to: '/', activeClassName: 'active', activeStyle: { fontWeight: 'bold' } },
+	                                'Get Weather'
+	                            )
+	                        ),
 	                        React.createElement(
-	                            Link,
-	                            { to: 'about', activeClassName: 'active', activeStyle: { fontWeight: 'bold' } },
-	                            'About'
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'li',
-	                        null,
+	                            'li',
+	                            null,
+	                            React.createElement(
+	                                Link,
+	                                { to: 'about', activeClassName: 'active', activeStyle: { fontWeight: 'bold' } },
+	                                'About'
+	                            )
+	                        ),
 	                        React.createElement(
-	                            Link,
-	                            { to: 'examples', activeClassName: 'active', activeStyle: { fontWeight: 'bold' } },
-	                            'Examples'
+	                            'li',
+	                            null,
+	                            React.createElement(
+	                                Link,
+	                                { to: 'examples', activeClassName: 'active', activeStyle: { fontWeight: 'bold' } },
+	                                'Examples'
+	                            )
 	                        )
 	                    )
-	                )
-	            ),
-	            React.createElement(
-	                'div',
-	                { className: 'top-bar-right' },
+	                ),
 	                React.createElement(
-	                    'ul',
-	                    { className: 'menu' },
+	                    'div',
+	                    { className: 'top-bar-right' },
 	                    React.createElement(
-	                        'li',
-	                        null,
-	                        React.createElement('input', { type: 'search', placeholder: 'Search' })
-	                    ),
-	                    React.createElement(
-	                        'li',
-	                        null,
+	                        'form',
+	                        { action: '', onSubmit: this.onSearch },
 	                        React.createElement(
-	                            'button',
-	                            { type: 'button', className: 'button' },
-	                            'Get the weather'
+	                            'ul',
+	                            { className: 'menu' },
+	                            React.createElement(
+	                                'li',
+	                                null,
+	                                React.createElement('input', { type: 'search', ref: 'searchInputValue', placeholder: 'Search' })
+	                            ),
+	                            React.createElement(
+	                                'li',
+	                                null,
+	                                React.createElement(
+	                                    'button',
+	                                    { type: 'submit', className: 'button' },
+	                                    'Get the weather'
+	                                )
+	                            )
 	                        )
 	                    )
 	                )
 	            )
-	        )
-	    );
-	};
+	        );
+	    }
+
+	});
 
 	module.exports = Nav;
 
@@ -25037,7 +25056,12 @@
 	    handleSearch: function handleSearch(location) {
 
 	        var that = this;
-	        this.setState({ isLoading: true });
+	        this.setState({
+	            isLoading: true,
+	            errorMessage: undefined,
+	            location: undefined,
+	            temp: undefined
+	        });
 	        openWeatherMap.getTemp(location).then(function (temp) {
 	            that.setState({
 	                location: location,
@@ -25048,6 +25072,20 @@
 	            that.setState({ isLoading: false });
 	            alert(errorMessage);
 	        });
+	    },
+	    componentDidMount: function componentDidMount() {
+	        var location = this.props.location.query.location;
+	        if (location && location.length > 0) {
+	            this.handleSearch(location);
+	            window.location.hash = '#/';
+	        }
+	    },
+	    componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	        var location = newProps.location.query.location;
+	        if (location && location.length > 0) {
+	            this.handleSearch(location);
+	            window.location.hash = '#/';
+	        }
 	    },
 	    render: function render() {
 	        var _state = this.state,
